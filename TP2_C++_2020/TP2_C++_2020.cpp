@@ -6,7 +6,6 @@
 #include "nuitexception.h"
 #include "qantitexception.h"
 #include <string>
-#include <iostream>
 
 int main()
 {
@@ -17,16 +16,15 @@ int main()
         std::cout << "1.- Ajouter des Nuitees    : 100$" << std::endl;
         std::cout << "2.- Ajouter des Repas      : 20$" << std::endl;
         std::cout << "3.- Ajouter un Acces au spa: 75$" << std::endl;
-        std::cout << "4.- Ajouter un Accse au gym: 50$" << std::endl;
+        std::cout << "4.- Ajouter un Acces au gym: 50$" << std::endl;
         std::cout << "5.- Afficher la Facture et quitter" << std::endl;
         std::cout << "Veuillez selectionner votre choix : " << std::endl;
         int choix;
         std::cin >> choix;
-
+        int nombre_unites;
         switch (choix) {
         case 1:
         {
-            int nombre_unites;
             std::cout << "Entrez le nombre de nuits passe : ";
             std::cin >> nombre_unites;
             try {
@@ -43,13 +41,21 @@ int main()
         break;
         case 2:
         {
-            int nombr_unites;
             std::cout << "Entrez le nombre de repas : ";
-            std::cin >> nombr_unites;
-            ElementFacturable* repas = new FacturableParUnite("Repas", nombr_unites, 20);
+            std::cin >> nombre_unites;
+            try {
+                //Exception deuxieme version sans utilisation de la classe quantiteexception.h
+                if (nombre_unites < 0) throw std::domain_error("--Quantite Negative !!!!");
+            ElementFacturable* repas = new FacturableParUnite("Repas", nombre_unites, 20);
             elementFacturable[2] = repas;
             std::cout << "--Repas ajouter avec succee--" << std::endl;
+            
+            }
+            catch (const std::exception & ex) {
+                std::cout << ex.what() << std::endl;
+            }  
         }
+        
         fin = false;
         break;
         case 3:
@@ -75,19 +81,18 @@ int main()
             std::cout << "---------------------------------------------" << std::endl;
             for (std::map<int, ElementFacturable*>::iterator iter = elementFacturable.begin(); iter != elementFacturable.end(); ++iter) {
                 std::cout << iter->first << ":";
-                std::cout << " Element Facture a payer: " << iter->second->getNom()<<":   " << iter->second->calculerMontantFacturer();
+                std::cout << " Element Facture a payer: " << iter->second->getNom()<<":   " << iter->second->calculerMontantFacturer() << "$";
                 std::cout << std::endl;
                 facture_totale += iter->second->calculerMontantFacturer();
             }
             std::cout << "---------------------------------------------" << std::endl;
-            std::cout << "Facture Total General a Payer ======== " << facture_totale << std::endl;
-            fin = true;
-
+            std::cout << "Facture Total General a Payer ======== " << facture_totale <<"$"<< std::endl;
+            fin = true; 
         }
         break;
         };
     } while (!fin);
 
-    std::cout << "Au revoir  !" << std::endl;  
+    std::cout << "Au revoir et merci !" << std::endl;  
 }
 
